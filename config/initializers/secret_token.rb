@@ -16,4 +16,4 @@
 # Using secret_token for rails3 compatibility. Change to secret_key_base
 # to avoid deprecation warning.
 # Can be safely removed in a rails3 api-only application.
-PortfolioApi::Application.config.secret_token = '422624c208d4e28d8458ccfa0b56156160398be7a5b38287ebd0590528cd04ccb3f16519a99e4258cb32e4a7450fbda57eab193be05201e3bb4a7b9dbed6042d'
+PortfolioAPI::Application.config.secret_token = '422624c208d4e28d8458ccfa0b56156160398be7a5b38287ebd0590528cd04ccb3f16519a99e4258cb32e4a7450fbda57eab193be05201e3bb4a7b9dbed6042d'
