@@ -8,6 +8,7 @@ gem 'rails-api'
 gem 'spring', :group => :development
 
 
+gem 'active_model_serializers'
 gem 'pg'
 
 
