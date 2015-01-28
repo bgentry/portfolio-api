@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150128023952) do
+ActiveRecord::Schema.define(version: 20150128025243) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,18 @@ ActiveRecord::Schema.define(version: 20150128023952) do
     t.money    "price",                        scale: 2, null: false
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false
+  end
+
+  create_table "lots", force: :cascade do |t|
+    t.integer  "fund_id"
+    t.integer  "portfolio_id"
+    t.datetime "acquired_at"
+    t.datetime "sold_at"
+    t.money    "proceeds",                    scale: 2
+    t.decimal  "quantity",     precision: 15, scale: 6
+    t.money    "share_cost",                  scale: 2
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
   end
 
   create_table "portfolios", force: :cascade do |t|
