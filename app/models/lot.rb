@@ -1,4 +1,4 @@
 class Lot < ActiveRecord::Base
   belongs_to :portfolio
-  belongs_to :asset_class
+  belongs_to :fund
 end
