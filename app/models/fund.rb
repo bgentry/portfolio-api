@@ -18,5 +18,13 @@ class Fund < Sequel::Model
     def recently_realized_losses
       where(id: Lot.recently_realized_losses.select(:fund_id)).distinct
     end
+
+    def safe_to_buy
+      exclude(id: recently_realized_losses.select(:id))
+    end
+
+    def safe_to_harvest_losses
+      exclude(id: recently_purchased.select(:id))
+    end
   end
 end

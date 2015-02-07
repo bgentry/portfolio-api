@@ -61,4 +61,8 @@ class Lot < Sequel::Model
       safe_to_sell.losses
     end
   end
+
+  def safe_to_sell?
+    !self.class.safe_to_sell.where(id: self.id).empty?
+  end
 end
