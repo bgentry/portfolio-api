@@ -1,6 +1,6 @@
-class Allocation < ActiveRecord::Base
-  belongs_to :asset_class
-  belongs_to :portfolio, inverse_of: :allocations
+class Allocation < Sequel::Model
+  many_to_one :asset_class
+  many_to_one :portfolio
 
   validates :asset_class, :portfolio, presence: true
 end

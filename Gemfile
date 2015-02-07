@@ -11,7 +11,7 @@ gem 'spring', :group => :development
 gem 'active_model_serializers'
 gem 'pg'
 gem 'rack-cors', :require => 'rack/cors'
-
+gem "sequel-rails"
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

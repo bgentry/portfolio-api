@@ -1,9 +1,11 @@
-class CreateAssetClasses < ActiveRecord::Migration
-  def change
-    create_table :asset_classes do |t|
-      t.string :name
+Sequel.migration do
+  change do
+    create_table :asset_classes do
+      primary_key :id
+      String :name, null: false
 
-      t.timestamps null: false
+      DateTime :created_at, null: false
+      DateTime :updated_at, null: false
     end
   end
 end

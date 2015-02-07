@@ -1,15 +1,16 @@
-class CreateFunds < ActiveRecord::Migration
-  def change
-    create_table :funds do |t|
-      t.integer :asset_class_id, null: false
-      t.string :name,            null: false
-      t.string :symbol,          null: false
-      t.decimal :expense_ratio,  null: false, precision: 4, scale: 4
-      t.money :price, scale: 2,  null: false
+Sequel.migration do
+  change do
+    create_table :funds do
+      primary_key :id
 
-      t.timestamps null: false
+      foreign_key :asset_class_id, :asset_classes, on_delete: :restrict
+      String :name,              null: false
+      String :symbol,            null: false
+      BigDecimal :expense_ratio, null: false, size: [4,4]
+      money :price,              null: false
+
+      DateTime :created_at, null: false
+      DateTime :updated_at, null: false
     end
-
-    add_foreign_key :funds, :asset_classes, on_delete: :restrict
   end
 end

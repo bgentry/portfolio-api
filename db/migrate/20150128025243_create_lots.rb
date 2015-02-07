@@ -1,15 +1,19 @@
-class CreateLots < ActiveRecord::Migration
-  def change
-    create_table :lots do |t|
-      t.integer :fund_id
-      t.integer :portfolio_id
-      t.datetime :acquired_at
-      t.datetime :sold_at
-      t.money :proceeds,                  scale: 2
-      t.decimal :quantity, precision: 15, scale: 6
-      t.money :share_cost,                scale: 2
+Sequel.migration do
+  change do
+    create_table :lots do
+      primary_key :id
 
-      t.timestamps null: false
+      foreign_key :fund_id, :funds,           on_delete: :restrict
+      foreign_key :portfolio_id, :portfolios, on_delete: :restrict
+
+      DateTime :acquired_at,     null: false
+      DateTime :sold_at
+      BigDecimal :quantity,      null: false, size: [15,6]
+      money :share_cost,         null: false
+      money :proceeds
+
+      DateTime :created_at, null: false
+      DateTime :updated_at, null: false
     end
   end
 end

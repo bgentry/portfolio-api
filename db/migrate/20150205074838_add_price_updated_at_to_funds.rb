@@ -1,5 +1,5 @@
-class AddPriceUpdatedAtToFunds < ActiveRecord::Migration
-  def change
-    add_column :funds, :price_updated_at, :datetime
+Sequel.migration do
+  change do
+    add_column :funds, :price_updated_at, DateTime
   end
 end

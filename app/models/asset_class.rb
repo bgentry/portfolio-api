@@ -1,5 +1,5 @@
-class AssetClass < ActiveRecord::Base
-  has_many :funds, dependent: :destroy
+class AssetClass < Sequel::Model
+  one_to_many :funds
 
   validates :name, presence: true
 end

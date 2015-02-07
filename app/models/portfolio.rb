@@ -1,11 +1,14 @@
-class Portfolio < ActiveRecord::Base
-  has_many :allocations, dependent: :destroy, inverse_of: :portfolio
-  has_many :lots, dependent: :destroy
+class Portfolio < Sequel::Model
+  one_to_many :allocations
+  one_to_many :lots
+
+  add_association_dependencies allocations: :destroy, lots: :destroy
 
   validates :name, presence: true
   validate :allocation_weights_must_add_to_1
 
-  accepts_nested_attributes_for :allocations
+  plugin :nested_attributes
+  nested_attributes :allocations
 
   def allocation_weights_must_add_to_1
     if allocations.map(&:weight).inject(:+) != BigDecimal.new("1.0")

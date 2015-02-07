@@ -1,14 +1,14 @@
-class CreateAllocations < ActiveRecord::Migration
-  def change
-    create_table :allocations do |t|
-      t.integer :asset_class_id,                 null: false
-      t.integer :portfolio_id,                   null: false
-      t.decimal :weight, precision: 3, scale: 2, null: false
+Sequel.migration do
+  change do
+    create_table :allocations do
+      primary_key :id
 
-      t.timestamps null: false
+      foreign_key :asset_class_id, :asset_classes, on_delete: :restrict
+      foreign_key :portfolio_id, :portfolios, on_delete: :restrict
+      BigDecimal :weight, null: false, size: [3,2]
+
+      DateTime :created_at, null: false
+      DateTime :updated_at, null: false
     end
-
-    add_foreign_key :allocations, :asset_classes, on_delete: :restrict
-    add_foreign_key :allocations, :portfolios,    on_delete: :restrict
   end
 end
