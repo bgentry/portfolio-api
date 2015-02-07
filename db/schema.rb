@@ -12,6 +12,7 @@ Sequel.migration do
       column :name, "text", :null=>false
       column :created_at, "timestamp without time zone", :null=>false
       column :updated_at, "timestamp without time zone", :null=>false
+      column :taxable, "boolean", :default=>true, :null=>false
     end
     
     create_table(:schema_migrations) do
@@ -70,5 +71,6 @@ Sequel.migration do
     self << "INSERT INTO \"schema_migrations\" (\"filename\") VALUES ('20150203060428_add_unique_index_to_allocations.rb')"
     self << "INSERT INTO \"schema_migrations\" (\"filename\") VALUES ('20150205074838_add_price_updated_at_to_funds.rb')"
     self << "INSERT INTO \"schema_migrations\" (\"filename\") VALUES ('20150206061849_add_unique_index_to_fund_symbol.rb')"
+    self << "INSERT INTO \"schema_migrations\" (\"filename\") VALUES ('20150207214513_add_taxable_to_portfolio.rb')"
   end
 end
