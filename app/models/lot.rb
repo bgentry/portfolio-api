@@ -18,7 +18,5 @@ class Lot < ActiveRecord::Base
   scope :recently_sold, -> {
     closed.where("date_trunc('day', sold_at) > date_trunc('day', now()) - interval '30 days'")
   }
-  scope :recently_realized_losses, -> {
-    losses.recently_sold
-  }
+  scope :recently_realized_losses, -> { realized_losses.recently_sold }
 end
