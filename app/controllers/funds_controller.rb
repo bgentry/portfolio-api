@@ -30,8 +30,6 @@ class FundsController < ApplicationController
   # PATCH/PUT /funds/1
   # PATCH/PUT /funds/1.json
   def update
-    @fund = Fund.find(params[:id])
-
     if @fund.update(fund_params)
       head :no_content
     else
@@ -50,7 +48,7 @@ class FundsController < ApplicationController
   private
 
     def set_fund
-      @fund = Fund.find(params[:id])
+      @fund = Fund.with_pk!(params[:id])
     end
 
     def fund_params

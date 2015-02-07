@@ -30,8 +30,6 @@ class LotsController < ApplicationController
   # PATCH/PUT /lots/1
   # PATCH/PUT /lots/1.json
   def update
-    @lot = Lot.find(params[:id])
-
     if @lot.update(lot_params)
       head :no_content
     else
@@ -50,7 +48,7 @@ class LotsController < ApplicationController
   private
 
     def set_lot
-      @lot = Lot.find(params[:id])
+      @lot = Lot.with_pk!(params[:id])
     end
 
     def lot_params

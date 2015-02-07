@@ -4,7 +4,7 @@ class PortfoliosController < ApplicationController
   # GET /portfolios
   # GET /portfolios.json
   def index
-    @portfolios = Portfolio.all
+    @portfolios = Portfolio.eager_graph(:lots).eager_graph(allocations: {:asset_class => :funds}).all
 
     render json: @portfolios
   end
@@ -30,8 +30,6 @@ class PortfoliosController < ApplicationController
   # PATCH/PUT /portfolios/1
   # PATCH/PUT /portfolios/1.json
   def update
-    @portfolio = Portfolio.find(params[:id])
-
     if @portfolio.update(portfolio_params)
       head :no_content
     else
@@ -50,7 +48,7 @@ class PortfoliosController < ApplicationController
   private
 
     def set_portfolio
-      @portfolio = Portfolio.find(params[:id])
+      @portfolio = Portfolio.with_pk!(params[:id])
     end
 
     def portfolio_params

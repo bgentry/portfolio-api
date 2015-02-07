@@ -4,7 +4,7 @@ class AllocationsController < ApplicationController
   # GET /allocations
   # GET /allocations.json
   def index
-    @allocations = Allocation.all
+    @allocations = Allocation.eager_graph(:asset_class).all
 
     render json: @allocations
   end
@@ -30,8 +30,6 @@ class AllocationsController < ApplicationController
   # PATCH/PUT /allocations/1
   # PATCH/PUT /allocations/1.json
   def update
-    @allocation = Allocation.find(params[:id])
-
     if @allocation.update(allocation_params)
       head :no_content
     else
@@ -50,7 +48,7 @@ class AllocationsController < ApplicationController
   private
 
     def set_allocation
-      @allocation = Allocation.find(params[:id])
+      @allocation = Allocation.with_pk!(params[:id])
     end
 
     def allocation_params

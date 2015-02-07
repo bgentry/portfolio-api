@@ -1,3 +1,4 @@
+Sequel::Model.include ActiveModel::Serialization
 Sequel::Model.include ActiveModel::Validations
 
 Sequel::Model.plugin :association_dependencies
