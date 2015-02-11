@@ -30,7 +30,25 @@ class PortfoliosController < ApplicationController
   # PATCH/PUT /portfolios/1
   # PATCH/PUT /portfolios/1.json
   def update
-    if @portfolio.update(portfolio_params)
+    port_params = portfolio_params
+    allocation_ids = Set.new()
+    if port_params[:allocations_attributes].present?
+      port_params[:allocations_attributes].each do |allocation|
+        allocation_ids << allocation[:id].to_i
+        # delete any allocations with weight of 0
+        if allocation[:weight] == BigDecimal.new("0.0")
+          allocation[:_delete] = true
+        end
+      end
+      @portfolio.allocations.each do |allocation|
+        # If an allocation isn't in allocations_attributes, add it there and mark
+        # it for deletion.
+        unless allocation_ids.include?(allocation.id)
+          port_params[:allocations_attributes] << {id: allocation.id, _delete: true}
+        end
+      end
+    end
+    if @portfolio.update(port_params)
       head :no_content
     else
       render json: @portfolio.errors, status: :unprocessable_entity
@@ -55,7 +73,7 @@ class PortfoliosController < ApplicationController
       # Rails expects allocation data as allocations_attributes, but Ember wants
       # to stick with the serialized format for creation.
       port_params = params.require(:portfolio).permit(:name, :taxable, {
-        allocations: [:weight, :asset_class_id],
+        allocations: [:id, :weight, :asset_class_id],
       })
       port_params["allocations_attributes"] = port_params.delete("allocations")
       port_params
