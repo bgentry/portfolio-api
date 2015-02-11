@@ -8,7 +8,9 @@ class Portfolio < Sequel::Model
   validate :allocation_weights_must_add_to_1
 
   plugin :nested_attributes
-  nested_attributes :allocations
+  nested_attributes :allocations, destroy: true, fields: ->(portfolio) {
+    portfolio.new? ? [:asset_class_id, :weight] : [:weight]
+  }
 
   def allocation_weights_must_add_to_1
     if allocations.map(&:weight).inject(:+) != BigDecimal.new("1.0")

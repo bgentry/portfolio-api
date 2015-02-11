@@ -34,7 +34,10 @@ class PortfoliosController < ApplicationController
     allocation_ids = Set.new()
     if port_params[:allocations_attributes].present?
       port_params[:allocations_attributes].each do |allocation|
-        allocation_ids << allocation[:id].to_i
+        if allocation[:id].present?
+          allocation_ids << allocation[:id].to_i
+          allocation.delete(:asset_class_id)
+        end
         # delete any allocations with weight of 0
         if allocation[:weight] == BigDecimal.new("0.0")
           allocation[:_delete] = true
