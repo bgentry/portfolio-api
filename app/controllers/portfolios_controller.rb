@@ -53,8 +53,8 @@ class PortfoliosController < ApplicationController
 
     def portfolio_params
       # Rails expects allocation data as allocations_attributes, but Ember wants
-      # to sticky with the serialized format for creation.
-      port_params = params.require(:portfolio).permit(:name, {
+      # to stick with the serialized format for creation.
+      port_params = params.require(:portfolio).permit(:name, :taxable, {
         allocations: [:weight, :asset_class_id],
       })
       port_params["allocations_attributes"] = port_params.delete("allocations")
