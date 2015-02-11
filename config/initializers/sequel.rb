@@ -3,6 +3,7 @@ sm_includes.each do |i|
   Sequel::Model.include(i)
 end
 
+Sequel::Model.plugin :active_model
 Sequel::Model.plugin :association_dependencies
 Sequel::Model.plugin :timestamps, update_on_create: true
 
