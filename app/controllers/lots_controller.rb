@@ -4,7 +4,7 @@ class LotsController < ApplicationController
   # GET /lots
   # GET /lots.json
   def index
-    @lots = Lot.all
+    @lots = Lot.with_quantity_sold.all
 
     render json: @lots
   end
@@ -48,7 +48,7 @@ class LotsController < ApplicationController
   private
 
     def set_lot
-      @lot = Lot.with_pk!(params[:id])
+      @lot = Lot.with_quantity_sold.with_pk!(params[:id])
     end
 
     def lot_params

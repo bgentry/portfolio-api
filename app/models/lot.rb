@@ -6,12 +6,18 @@ class Lot < Sequel::Model
   dataset_module do
     subset :unrealized, {sold_at: nil}
 
+    def with_quantity_sold
+      left_join(:sells, lot_id: :id).group(:lots__id, :sells__id).select_all(:lots).
+        select_append{coalesce(sum(sells__quantity), 0).as(quantity_sold)}.
+        order(:lots__id)
+    end
+
     def realized
       unrealized.invert
     end
 
     def join_funds
-      join(:funds, :id => :fund_id)
+      join(:funds, id: :fund_id)
     end
 
     def gains
@@ -61,6 +67,10 @@ class Lot < Sequel::Model
     def safe_to_sell_losses
       safe_to_sell.losses
     end
+  end
+
+  def quantity_sold
+    values[:quantity_sold] || sells_dataset.select{coalesce(sum(quantity), 0)}
   end
 
   def safe_to_sell?
