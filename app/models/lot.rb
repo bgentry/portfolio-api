@@ -1,6 +1,7 @@
 class Lot < Sequel::Model
   many_to_one :portfolio
   many_to_one :fund
+  one_to_many :sells
 
   dataset_module do
     subset :unrealized, {sold_at: nil}

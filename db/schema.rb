@@ -51,10 +51,18 @@ Sequel.migration do
       foreign_key :fund_id, :funds, :key=>[:id], :on_delete=>:restrict
       foreign_key :portfolio_id, :portfolios, :key=>[:id], :on_delete=>:restrict
       column :acquired_at, "timestamp without time zone", :null=>false
-      column :sold_at, "timestamp without time zone"
       column :quantity, "numeric(15,6)", :null=>false
       column :share_cost, "money", :null=>false
-      column :proceeds, "money"
+      column :created_at, "timestamp without time zone", :null=>false
+      column :updated_at, "timestamp without time zone", :null=>false
+    end
+    
+    create_table(:sells) do
+      primary_key :id
+      foreign_key :lot_id, :lots, :key=>[:id], :on_delete=>:restrict
+      column :quantity, "numeric(15,6)", :null=>false
+      column :price, "money", :null=>false
+      column :sold_at, "timestamp without time zone", :null=>false
       column :created_at, "timestamp without time zone", :null=>false
       column :updated_at, "timestamp without time zone", :null=>false
     end
@@ -72,5 +80,9 @@ Sequel.migration do
     self << "INSERT INTO \"schema_migrations\" (\"filename\") VALUES ('20150205074838_add_price_updated_at_to_funds.rb')"
     self << "INSERT INTO \"schema_migrations\" (\"filename\") VALUES ('20150206061849_add_unique_index_to_fund_symbol.rb')"
     self << "INSERT INTO \"schema_migrations\" (\"filename\") VALUES ('20150207214513_add_taxable_to_portfolio.rb')"
+    self << "INSERT INTO \"schema_migrations\" (\"filename\") VALUES ('20150212223909_create_sells.rb')"
+    self << "INSERT INTO \"schema_migrations\" (\"filename\") VALUES ('20150212225000_add_sell_quantity_constraint_trigger.rb')"
+    self << "INSERT INTO \"schema_migrations\" (\"filename\") VALUES ('20150212225959_move_lot_sell_data_to_sells.rb')"
+    self << "INSERT INTO \"schema_migrations\" (\"filename\") VALUES ('20150213043641_remove_sell_columns_from_lot.rb')"
   end
 end
