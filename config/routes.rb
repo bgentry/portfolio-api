@@ -4,4 +4,5 @@ Rails.application.routes.draw do
   resources :funds, except: [:new, :edit]
   resources :lots, except: [:new, :edit]
   resources :portfolios, except: [:new, :edit]
+  resources :sells, except: [:new, :edit]
 end
