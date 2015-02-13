@@ -1,3 +1,10 @@
+GIT
+  remote: git://github.com/bgentry/yahoo-finance.git
+  revision: b750d4e7d1da02ec05f32ef43188d46aaeb6a6a5
+  branch: use-https
+  specs:
+    yahoo-finance (0.2.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -122,3 +129,4 @@ DEPENDENCIES
   rails-api
   sequel-rails
   spring
+  yahoo-finance!

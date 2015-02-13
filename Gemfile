@@ -5,13 +5,14 @@ gem 'rails', '4.2.0'
 
 gem 'rails-api'
 
-gem 'spring', :group => :development
+gem 'spring', group: :development
 
 
 gem 'active_model_serializers'
 gem 'pg'
-gem 'rack-cors', :require => 'rack/cors'
-gem "sequel-rails"
+gem 'rack-cors', require: 'rack/cors'
+gem 'sequel-rails'
+gem 'yahoo-finance', github: 'bgentry/yahoo-finance', branch: 'use-https'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
