@@ -4,7 +4,7 @@ class PortfoliosController < ApplicationController
   # GET /portfolios
   # GET /portfolios.json
   def index
-    @portfolios = Portfolio.eager_graph(:lots).eager_graph(allocations: {:asset_class => :funds}).all
+    @portfolios = Portfolio.eager_graph(lots: :sells).eager_graph(allocations: {:asset_class => :funds}).all
 
     render json: @portfolios
   end
