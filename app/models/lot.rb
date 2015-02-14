@@ -70,7 +70,7 @@ class Lot < Sequel::Model
   end
 
   def quantity_sold
-    values[:quantity_sold] || sells_dataset.select{coalesce(sum(quantity), 0)}
+    values[:quantity_sold] || BigDecimal.new(sells.sum(&:quantity))
   end
 
   def safe_to_sell?
