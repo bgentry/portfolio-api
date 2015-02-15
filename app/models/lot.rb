@@ -3,13 +3,17 @@ class Lot < Sequel::Model
   many_to_one :fund
   one_to_many :sells
 
+  # TODO: validations
+  # TODO: validate share_cost as money > $0
+
   dataset_module do
     subset :unrealized, {sold_at: nil}
 
     def with_quantity_sold
-      left_join(:sells, lot_id: :id).group(:lots__id, :sells__id).select_all(:lots).
-        select_append{coalesce(sum(sells__quantity), 0).as(quantity_sold)}.
-        order(:lots__id)
+      lwqs = from(:sells).select(:lot_id).select_append{sum(quantity).as(quantity_sold)}.group(:lot_id)
+      with(:lot_ids_with_quantity_sold, lwqs).
+        left_join(:lot_ids_with_quantity_sold, lot_id: :id).select_all(:lots).
+        select_append{coalesce(quantity_sold, 0).as(quantity_sold)}
     end
 
     def realized
