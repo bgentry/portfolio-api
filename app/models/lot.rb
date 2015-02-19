@@ -24,24 +24,20 @@ class Lot < Sequel::Model
       unrealized.invert
     end
 
-    def join_funds
+    def join_fund
       join(:funds, id: :fund_id)
     end
 
-    def gains
-      join_funds.where{share_cost * quantity < coalesce(proceeds, quantity * price)}
+    def join_sells
+      join(:sells, lot_id: :id)
     end
 
-    def losses
-      join_funds.where{share_cost * quantity > coalesce(proceeds, quantity * price)}
-    end
-
-    def realized_losses
-      realized.losses
+    def unrealized_gains
+      unrealized.join_fund.where{funds__price > share_cost}
     end
 
     def unrealized_losses
-      unrealized.losses
+      unrealized.join_fund.where{funds__price < share_cost}
     end
 
     def short_term
@@ -57,23 +53,67 @@ class Lot < Sequel::Model
     end
 
     def recently_sold
-      realized.where("date_trunc('day', sold_at) > date_trunc('day', now()) - interval '30 days'")
+      join_sells.distinct(:lots__id).
+        where("date_trunc('day', sold_at) >= date_trunc('day', now()) - interval '30 days'")
     end
 
-    def recently_realized_losses
-      realized_losses.recently_sold
+    def losses
+      join_fund.where{funds__price < share_cost}
     end
 
     def would_be_wash_sells
-      unrealized.where(fund_id: recently_purchased.select(:fund_id).distinct)
+      with(:lot_ids_with_quantity_sold,
+           from(:sells).select(:lot_id).
+           select_append{sum(quantity).as(quantity_sold)}.
+           group(:lot_id)
+      ).
+      with(:lots_with_quantity_sold,
+           left_outer_join(:lot_ids_with_quantity_sold, lots__id: :lot_ids_with_quantity_sold__lot_id).
+           select_all(:lots).
+           select_append{coalesce(:quantity_sold, 0).as(:quantity_sold)}
+      ).
+      with(:recently_purchased, recently_purchased.select(:id)).
+      with(:losses, losses.select(:lots__id)).
+      from{lots_with_quantity_sold.as(:lots)}.
+      join(:losses, lots__id: :losses__id).
+      where{quantity_sold < quantity}.
+      where(lots__id: from(:recently_purchased).select(:id))
     end
 
     def safe_to_sell
-      unrealized.exclude(fund_id: would_be_wash_sells.select(:fund_id).distinct)
+      with(:lot_ids_with_quantity_sold,
+           from(:sells).select(:lot_id).
+           select_append{sum(quantity).as(quantity_sold)}.
+           group(:lot_id)
+      ).
+      with(:lots_with_quantity_sold,
+           left_outer_join(:lot_ids_with_quantity_sold, lots__id: :lot_ids_with_quantity_sold__lot_id).
+           select_all(:lots).
+           select_append{coalesce(:quantity_sold, 0).as(:quantity_sold)}
+      ).
+      with(:recently_purchased, recently_purchased.select(:id)).
+      from{lots_with_quantity_sold.as(:lots)}.
+      where{quantity_sold < quantity}.
+      exclude(lots__id: from(:recently_purchased).select(:id))
     end
 
     def safe_to_sell_losses
-      safe_to_sell.losses
+      with(:lot_ids_with_quantity_sold,
+           from(:sells).select(:lot_id).
+           select_append{sum(quantity).as(quantity_sold)}.
+           group(:lot_id)
+      ).
+      with(:lots_with_quantity_sold,
+           left_outer_join(:lot_ids_with_quantity_sold, lots__id: :lot_ids_with_quantity_sold__lot_id).
+           select_all(:lots).
+           select_append{coalesce(:quantity_sold, 0).as(:quantity_sold)}
+      ).
+      with(:recently_purchased, recently_purchased.select(:id)).
+      with(:losses, losses.select(:lots__id)).
+      from{lots_with_quantity_sold.as(:lots)}.
+      join(:losses, lots__id: :losses__id).
+      where{quantity_sold < quantity}.
+      exclude(lots__id: from(:recently_purchased).select(:id))
     end
   end
 
