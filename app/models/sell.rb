@@ -11,24 +11,22 @@ class Sell < Sequel::Model
       join(:lots, id: :lot_id)
     end
 
-    def join_funds
-      join(:funds, id: :fund_id)
-    end
-
     def gains
-      join_lot.where{lots__share_cost < sells__price}
+      join_lot.select_all(:sells).where{lots__share_cost < sells__price}
     end
 
     def losses
-      join_lot.where{lots__share_cost > sells__price}
+      join_lot.select_all(:sells).where{lots__share_cost > sells__price}
     end
 
     def short_term
-      join_lot.where("(sold_at - lots__acquired_at) < interval '1 year'")
+      join_lot.select_all(:sells).
+        where("(sold_at - lots.acquired_at) < interval '1 year'")
     end
 
     def long_term
-      join_lot.where("(sold_at - lots__acquired_at) >= interval '1 year'")
+      join_lot.select_all(:sells).
+        where("(sold_at - lots.acquired_at) >= interval '1 year'")
     end
 
     def recently_realized
