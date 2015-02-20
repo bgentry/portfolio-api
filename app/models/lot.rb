@@ -30,11 +30,11 @@ class Lot < Sequel::Model
     end
 
     def join_fund
-      join(:funds, id: :fund_id)
+      join(:funds, funds__id: :lots__fund_id)
     end
 
     def join_sells
-      join(:sells, lot_id: :id)
+      join(:sells, sells__lot_id: :lots__id)
     end
 
     def unrealized_gains
@@ -63,7 +63,8 @@ class Lot < Sequel::Model
 
     def recently_sold
       join_sells.distinct(:lots__id).
-        where("date_trunc('day', sold_at) >= date_trunc('day', now()) - interval '30 days'")
+        where("date_trunc('day', sold_at) >= date_trunc('day', now()) - interval '30 days'").
+        select_all(:lots)
     end
 
     def gains

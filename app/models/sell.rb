@@ -8,7 +8,7 @@ class Sell < Sequel::Model
 
   dataset_module do
     def join_lot
-      join(:lots, id: :lot_id)
+      join(:lots, lots__id: :sells__lot_id)
     end
 
     def gains
