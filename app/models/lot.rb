@@ -38,11 +38,11 @@ class Lot < Sequel::Model
     end
 
     def unrealized_gains
-      unrealized.join_fund.where{funds__price > share_cost}.select_all(:lots)
+      unrealized.gains.select_all(:lots)
     end
 
     def unrealized_losses
-      unrealized.join_fund.where{funds__price < share_cost}.select_all(:lots)
+      unrealized.losses.select_all(:lots)
     end
 
     def short_term
@@ -66,8 +66,12 @@ class Lot < Sequel::Model
         where("date_trunc('day', sold_at) >= date_trunc('day', now()) - interval '30 days'")
     end
 
+    def gains
+      join_fund.where{funds__price > share_cost}.select_all(:lots)
+    end
+
     def losses
-      join_fund.where{funds__price < share_cost}
+      join_fund.where{funds__price < share_cost}.select_all(:lots)
     end
 
     def would_be_wash_sells
