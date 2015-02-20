@@ -11,14 +11,14 @@ class Lot < Sequel::Model
       lwqs = from(:sells).select(:lot_id).
         select_append{sum(quantity).as(quantity_sold)}.
         group(:lot_id)
+
       with(:lot_ids_with_quantity_sold, lwqs).
         with(:lots_with_quantity_sold,
              left_outer_join(:lot_ids_with_quantity_sold, lots__id: :lot_ids_with_quantity_sold__lot_id).
              select_all(:lots).
              select_append{coalesce(:quantity_sold, 0).as(:quantity_sold)}
         ).
-        from{lots_with_quantity_sold.as(:lots)}.
-        select_append{coalesce(quantity_sold, 0).as(quantity_sold)}
+        from{lots_with_quantity_sold.as(:lots)}
     end
 
     def unrealized
