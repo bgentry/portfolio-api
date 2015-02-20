@@ -9,24 +9,36 @@ class Fund < Sequel::Model
   dataset_module do
     # Not safe to harvest losses of these funds:
     def recently_purchased
-      where(id: Lot.recently_purchased.select(:fund_id)).distinct
+      where(id: recently_purchased_fund_ids)
+    end
+
+    def recently_purchased_fund_ids
+      Lot.recently_purchased.distinct(:fund_id).select(:fund_id)
     end
 
     def recently_sold
-      where(id: Lot.recently_sold.select(:fund_id)).distinct
+      where(id: recently_sold_fund_ids)
+    end
+
+    def recently_sold_fund_ids
+      Lot.recently_sold.distinct(:fund_id).select(:fund_id)
     end
 
     # Not safe to buy funds in this group:
     def recently_realized_losses
-      where(id: Lot.recently_realized_losses.select(:fund_id)).distinct
+      where(id: recently_realized_losses_fund_ids)
+    end
+
+    def recently_realized_losses_fund_ids
+      Lot.recently_sold.losses.distinct(:fund_id).select(:fund_id)
     end
 
     def safe_to_buy
-      exclude(id: recently_realized_losses.select(:id))
+      exclude(id: recently_realized_losses_fund_ids)
     end
 
     def safe_to_harvest_losses
-      exclude(id: recently_purchased.select(:id))
+      exclude(id: recently_purchased_fund_ids)
     end
   end
 
