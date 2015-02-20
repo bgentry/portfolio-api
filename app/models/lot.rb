@@ -33,6 +33,10 @@ class Lot < Sequel::Model
       join(:funds, funds__id: :lots__fund_id)
     end
 
+    def join_portfolio
+      join(:portfolios, portfolios__id: :lots__portfolio_id)
+    end
+
     def join_sells
       join(:sells, sells__lot_id: :lots__id)
     end
@@ -83,8 +87,8 @@ class Lot < Sequel::Model
       unrealized.exclude(fund_id: recently_purchased_fund_ids)
     end
 
-    def safe_to_sell_losses
-      safe_to_sell.losses
+    def safe_to_sell_taxable_losses
+      safe_to_sell.losses.join_portfolio.where(portfolios__taxable: true).select_all(:lots)
     end
   end
 
