@@ -38,11 +38,11 @@ class Lot < Sequel::Model
     end
 
     def unrealized_gains
-      unrealized.join_fund.where{funds__price > share_cost}
+      unrealized.join_fund.where{funds__price > share_cost}.select_all(:lots)
     end
 
     def unrealized_losses
-      unrealized.join_fund.where{funds__price < share_cost}
+      unrealized.join_fund.where{funds__price < share_cost}.select_all(:lots)
     end
 
     def short_term
