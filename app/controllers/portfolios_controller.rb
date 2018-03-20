@@ -4,6 +4,8 @@ class PortfoliosController < ApplicationController
   # GET /portfolios
   # GET /portfolios.json
   def index
+    # TODO: ideally instead of eager loading sells, we could just include
+    # quantity_sold in the eager_lod for lots.
     @portfolios = Portfolio.eager_graph(lots: :sells).eager_graph(allocations: {:asset_class => :funds}).all
 
     render json: @portfolios
@@ -51,6 +53,8 @@ class PortfoliosController < ApplicationController
         end
       end
     end
+    # TODO: what about if the ID isn't included but the asset class already has
+    # an allocation on this portfolio?
     if @portfolio.update(port_params)
       head :no_content
     else
